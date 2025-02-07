@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import nikeManLogo from "../../../public/images/nike-man-logo.png"
 import nikeLogo from "../../../public/images/nike-logo.png"
 import searchIcon from "../../../public/images/search-icon.png"
@@ -7,6 +8,7 @@ import heartIcon from "../../../public/images/heart-icon.png"
 import lockIcon from "../../../public/images/lock-icon.png"
 
 import { Button } from "@/components/ui/button"
+
 
 
 export const Header = () => {
@@ -28,10 +30,10 @@ export const Header = () => {
 
           
 
-          <Button className='bg-slat-500 border-r-[1px] rounded-none  border-black font-bold' variant="link">Find a Store</Button>
-          <Button className='bg-slat-500 border-r-[1px] rounded-none  border-black font-bold' variant="link">Help</Button>
-          <Button className='bg-slat-500 border-r-[1px] rounded-none  border-black font-bold' variant="link">Join Us</Button>
-          <Button className='bg-slat-500  rounded-none  font-bold' variant="link">Sign In</Button>
+          <Button className='bg-slat-500 border-r-[1px] rounded-none  border-black font-bold' variant="link"><Link href="/product-store">Find a Store</Link></Button>
+          <Button className='bg-slat-500 border-r-[1px] rounded-none  border-black font-bold' variant="link"><Link href="/help">Help</Link> </Button>
+          <Button className='bg-slat-500 border-r-[1px] rounded-none  border-black font-bold' variant="link"><Link href="/join-us">Join Us</Link> </Button>
+          <Button className='bg-slat-500  rounded-none  font-bold' variant="link"><Link href="/sign-in">Sign In</Link> </Button>
 
 
           
@@ -58,12 +60,12 @@ export const Header = () => {
 
         </div>
         <div className='div-2 w-[600px] h-[40px] bg-re-400 relative left-[190px] top-[10px] '>
-        <Button className=' font-bold text-[18px]' variant="link">New and Featured</Button>
-        <Button className=' font-bold text-[18px]' variant="link">Men</Button>
-        <Button className=' font-bold text-[18px]' variant="link">Women</Button>
-        <Button className=' font-bold text-[18px]' variant="link">Kids</Button>
+        <Button className=' font-bold text-[18px]' variant="link"><Link href="/product-store">New and Featured</Link></Button>
+        <Button className=' font-bold text-[18px]' variant="link"><Link href="/men-products">Men</Link></Button>
+        <Button className=' font-bold text-[18px]' variant="link"><Link href="/women-produts">Women</Link></Button>
+        <Button className=' font-bold text-[18px]' variant="link"><Link href="/kids-products">Kids</Link></Button>
         <Button className=' font-bold text-[18px]' variant="link">Sales</Button>
-        <Button className=' font-bold text-[18px]' variant="link">SNKRS</Button>
+        <Button className=' font-bold text-[18px]' variant="link"><Link href="/shoes">SNKRS</Link></Button>
           
 
         </div>
