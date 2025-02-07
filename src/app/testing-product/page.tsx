@@ -12,17 +12,14 @@ type Product = {
 
 export default async function Home() {
   const products: Product[] = await sanityFetch({ query: allProducts });
-  console.log("all products fetche scessfully")
+  console.log("all products fetche scessfully");
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <h1 className="text-3xl font-bold mb-6">Products</h1>
       <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((product) => (
-          <div
-            key={product._id}
-            className="bg-white shadow-md rounded  p-4"
-          >
+          <div key={product._id} className="bg-white shadow-md rounded  p-4">
             <Image
               src={product.imageUrl}
               alt={product.name}

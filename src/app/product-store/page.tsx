@@ -6,8 +6,9 @@ import filterIcon from "../../../public/images/store-filter-image.png";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { allProducts } from "@/sanity/lib/query";
 import Link from "next/link";
+import { addToCart, setCartCount, getCartCount } from "@/app/actions/actions";
 
-///////////// feteched product's data type /////////////
+// ///////////// feteched product's data type /////////////
 type ProductDataType = {
   _id: string;
   status: string;
@@ -16,7 +17,7 @@ type ProductDataType = {
   description: string;
   price: number;
   imageUrl: string;
-  
+  inventory: number;
 };
 
 const ProductPage = () => {
@@ -24,10 +25,11 @@ const ProductPage = () => {
   const [genderDropdownOpen, setGenderDropdownOpen] = useState(false);
   const [kidsDropdownOpen, setKidsDropdownOpen] = useState(false);
   const [priceDropdownOpen, setPriceDropdownOpen] = useState(false);
-  ///////////////////// testing gpt ///////////////////////
+  ///////////////////// testing  ///////////////////////
   const [products, setProducts] = useState<ProductDataType[]>([]); // State to store products
   const [isLoading, setIsLoading] = useState<boolean>(true); // State for loading indicator
   const [error, setError] = useState<string | null>(null); // State for error handling
+  const [cartCount, setCartCountState] = useState<number>(getCartCount());
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -48,6 +50,14 @@ const ProductPage = () => {
 
     fetchProducts(); // Call the async function
   }, []); // Empty dependency array ensures this runs only once
+
+  const handleAddToCart = (e: React.MouseEvent, product: ProductDataType) => {
+    e.preventDefault();
+    addToCart(product);
+    const newCount = cartCount + 1;
+    setCartCount(newCount);
+    setCartCountState(newCount);
+  };
 
   return (
     <>
@@ -255,164 +265,50 @@ const ProductPage = () => {
             ) : error ? (
               <p className="text-rd-500">{error}</p> // Show error state
             ) : (
-              
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-[200px] bg-late-500">
                 {products.map((product) => (
-                  
                   <div key={product._id}>
-                    <div className="bg-gree-200 rounded-lg shado-md p-4">
-                    <Link href={`/product-store/${product._id}`}>
-                      <Image
-                        src={product.imageUrl}
-                        width={300}
-                        height={200}
-                        alt={product.productName}
-                        className=""
-                      />
-                       </Link>
+                    <div className="bg-[#eeeeee] rounded-lg shado-md p-4">
+                      <Link href={`/product-store/${product._id}`}>
+                        <Image
+                          src={product.imageUrl}
+                          width={300}
+                          height={200}
+                          alt={product.productName}
+                          className=""
+                        />
+                      </Link>
                       <p className="text-[14px] font-semibold text-red-800">
                         {product.status}
                       </p>
-                      
-                      <h2 className="text-lg font-bold text-[#111111] ">
-                        {/* <Link href={"/product-store/" + product._id}>
-                          {product.productName}
-                        </Link> */}
-                      </h2>
+
+                      <h2 className="text-lg font-bold text-[#111111] "></h2>
                       <p className="text-[15px] text-[#757575]">
                         {product.category}
                       </p>
-                      {/* <p className="text-sm text-gray-600">
-                        {product.description}
-                      </p> */}
+
                       <p className="text-lg text-[#111111] font-bold">
                         ${product.price}
                       </p>
+
+                      {/* ////////////// addto cart button */}
+                      <button
+                        className="bg-[#c6c6c6] text-[#111111] font-medium  py-1 px-3 text-cente ml-[160px]  w-[115px]  rounded hover:bg-slate-400 transition"
+                        onClick={(e) => handleAddToCart(e, product)}
+                      >
+                        <Link href="#">Add to Cart</Link>
+                      </button>
                     </div>
-                   
                   </div>
                 ))}
               </div>
-              
-         
-
             )}
           </main>
-
-          {/* /////////////////////////////////////////////////////////////////////////// ///////*/}
-
-          {/* <main className="flex-1 p-4 bg-red-900"> */}
-
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-[200px] bg-slate-500"> */}
-
-          {/* Product Cards */}
-          {/* <ProductCard
-              title="Nike Air Force 1 Mid '07"
-              price="₹10,795.00"
-              imgSrc="/images/shoe_3.png"
-              gender="Men's Shoes"
-              color= {1}
-              productStatus="Just In"
-            />
-            <ProductCard
-              title="Nike Court Vision Low Next Nature"
-              price="₹4,995.00"
-              imgSrc="/images/shoe-_4.png"
-              gender="Men's Shoes"
-              color= {1}
-              productStatus="Just In"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/shoe-_5.png"
-              gender="Women's Shoes"
-              color= {1}
-              productStatus="Just In"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/cloth_1-men.png"
-              gender="Men's Short-Sleeve Fitness Top"
-              color= {1}
-              productStatus="Just In"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/cloth_2-men.png"
-              gender="Men's Tight-Fit Sleeveless Top"
-              color= {1}
-              productStatus="Just In"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/cloth_3-men.png"
-              gender="Men's Short-Sleeve Running Top"
-              color= {1}
-              productStatus="Promo Exclusion"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/cloth_1-women.png"
-              gender="Women's Mid-Rise 18cm (approx.) Biker Shorts"
-              color= {1}
-              productStatus="Promo Exclusion"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/cloth_2-women.png"
-              gender="Women's Mid-Rise 18cm (approx.) Biker Shorts"
-              color= {1}
-              productStatus="Just In"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/cloth_2-women.png"
-              gender="Women's Mid-Rise 18cm (approx.) Biker Shorts"
-              color= {1}
-              productStatus="Sustainable Materials"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/cloth_1-kids.png"
-              gender="Older Kids' Oversized Woven Jacket"
-              color= {1}
-              productStatus="Just In"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/cloth_1-kids.png"
-              gender="Older Kids' Oversized Woven Jacket"
-              color= {1}
-              productStatus="Just In"
-            />
-            <ProductCard
-              title="Nike Air Force 1 PLT.AF.ORM"
-              price="₹8,695.00"
-              imgSrc="/images/cloth_1-kids.png"
-              gender="Older Kids' Oversized Woven Jacket"
-              color= {1}
-              productStatus="Just In"
-            /> */}
-
-          {/* </div>
-
-          </main> */}
-
-          {/* ////////////////////////////  on final delete the above code ///////////////////////////////////// */}
         </div>
-      </div> 
+      </div>
 
-    {/* Related Categories */}
-       <section className="mt-5 bg-blu-500 w-[600px pb-[100px] ml-[360px]">
+      {/* Related Categories */}
+      <section className="mt-5 bg-blu-500 w-[600px pb-[100px] ml-[360px]">
         <h2 className="text-lg font-bold mb-4">Related Categories</h2>
         <div className="grid grid-rows-2 grid-cols-5 gap-2 px-[100px bg-slat-400">
           {[
@@ -433,138 +329,12 @@ const ProductPage = () => {
               className="bg-white border border-gray-300 rounded-full px-1 py-2 text-gray-700 hover:bg-gray-200 transition text-center text-[13px font-edium"
             >
               {category}
-           </a>
+            </a>
           ))}
         </div>
-       </section>
-  </>
-  ); 
+      </section>
+    </>
+  );
 };
 
 export default ProductPage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////// testing fail /////////////////////
-// import Image from "next/image";
-// import Link from "next/link"; // Import Link for navigation
-// import { client } from "@/sanity/lib/client";
-
-// // Define the type for a product
-// type Product = {
-//   productName: string;
-//   price: number;
-//   status: string;
-//   category: string;
-//   colors: string[];
-//   imageUrl: string;
-//   slug: {
-//     current: string; // Ensure slug is defined
-//   };
-// };
-
-// // Fetch products from Sanity
-// const fetchProducts = async (): Promise<Product[]> => {
-//   const query = `*[_type == "product"]{
-//     productName,
-//     price,
-//     status,
-//     category,
-//     colors,
-//     "imageUrl": image.asset->url,
-//     slug
-//   }`;
-
-//   return await client.fetch(query);
-// };
-
-// const ProductsPage = async () => {
-//   const products = await fetchProducts(); // Fetch data on the server
-
-//   return (
-//     <div className="flex flex-col md:flex-row gap-6 p-4">
-//       {/* Sidebar */}
-//       <div className="w-full md:w-1/4 bg-gray-50 p-4 rounded-lg shadow-md">
-//         <h2 className="text-lg font-bold mb-4">New (50)</h2>
-//         <ul className="space-y-2">
-//           <li className="text-gray-700 font-medium">Shoes</li>
-//           <li className="text-gray-700 font-medium">Sports Bras</li>
-//           <li className="text-gray-700 font-medium">Tops & T-Shirts</li>
-//           <li className="text-gray-700 font-medium">Hoodies & Sweatshirts</li>
-//           <li className="text-gray-700 font-medium">Jackets</li>
-//           <li className="text-gray-700 font-medium">Trousers & Tights</li>
-//           <li className="text-gray-700 font-medium">Shorts</li>
-//           <li className="text-gray-700 font-medium">Tracksuits</li>
-//           <li className="text-gray-700 font-medium">Jumpsuits & Rompers</li>
-//           <li className="text-gray-700 font-medium">Socks</li>
-//         </ul>
-//         <h3 className="text-lg font-bold mt-6">Gender</h3>
-//         <ul className="space-y-2">
-//           <li className="text-gray-700">Men</li>
-//           <li className="text-gray-700">Women</li>
-//           <li className="text-gray-700">Unisex</li>
-//         </ul>
-//         <h3 className="text-lg font-bold mt-6">Kids</h3>
-//         <ul className="space-y-2">
-//           <li className="text-gray-700">Boys</li>
-//           <li className="text-gray-700">Girls</li>
-//         </ul>
-//         <h3 className="text-lg font-bold mt-6">Shop by Price</h3>
-//         <ul className="space-y-2">
-//           <li className="text-gray-700">Under ₹2,500.00</li>
-//           <li className="text-gray-700">₹2,501.00 - ₹5,000.00</li>
-//         </ul>
-//       </div>
-
-//       {/* Products Grid */}
-//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//         {products.map((product, index) => (
-//           <div
-//             key={index}
-//             className="border rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-//           >
-//             <Link href={/product-store/ + product.slug?.current}>
-//             {/* <Link href={`/product-store/${product.slug?.current || ''}`}> */}
-//               <Image
-//                 src={product.imageUrl}
-//                 alt={product.productName}
-//                 width={300}
-//                 height={300}
-//                 className="w-full h-60 object-cover"
-//               />
-//               <div className="p-4">
-//                 <h3 className="text-lg font-bold">{product.productName}</h3>
-//                 <p className="text-sm text-gray-600">{product.category}</p>
-//                 <p className="text-sm text-gray-600">{product.colors}</p>
-//                 <p className="text-xl font-semibold text-green-600">
-//                   ₹{product.price}
-//                 </p>
-//               </div>
-//             </Link>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProductsPage;
